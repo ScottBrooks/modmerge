@@ -5,14 +5,14 @@ import (
 	"strings"
 )
 
-func (k *KEY) MergeWith(mk *KEY) error {
+func (k *KEY) MergeWith(mk *KEY, mod string) error {
 	lastBifId := uint32(len(k.bifs))
 	for i, be := range mk.bifs {
 		name, err := mk.GetBifPath(uint32(i))
 		if err != nil {
 			log.Printf("Err: %+v", err)
 		}
-		k.bifs = append(k.bifs, keyBifValue{Length: be.Length, Filename: strings.Replace(name, "data", "mod", 1)})
+		k.bifs = append(k.bifs, keyBifValue{Length: be.Length, Filename: strings.Replace(name, "data", mod, 1)})
 	}
 	for _, mr := range mk.resources {
 		kur := keyUniqueResource{Name: mr.CleanName(), Type: mr.Type}
