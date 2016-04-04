@@ -6,7 +6,7 @@ http://www.scottbrooks.ca/modmerge/
 
 # Source build
  - Install golang from http://golang.org
- - go build github.com/ScottBrooks/modmerge/cmd/modmerge.go
+ - go build github.com/ScottBrooks/modmerge/modmerge
 
 # Details
 
