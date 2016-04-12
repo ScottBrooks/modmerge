@@ -2,7 +2,7 @@
 Merge BGEE/BG2EE v2.0 mod zip files back into the main game(making them weidu compatible).
 
 # Downloads/Binaries
-http://www.scottbrooks.ca/modmerge/
+http://github.com/ScottBrooks/modmerge/releases
 
 # Source build
  - Install golang from http://golang.org
