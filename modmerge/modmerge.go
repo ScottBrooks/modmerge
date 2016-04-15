@@ -47,9 +47,10 @@ func main() {
 
 	// Step 3: Load mod key, and attempt to extract the mod if possible
 	modKeyIn, err := os.Open(*name + ".key")
+	var modDlcName string
 	if os.IsNotExist(err) {
 		log.Printf("No %s.key found, attempting to extract %s", *name, *name)
-		err = attemptExtractMod(*name)
+		modDlcName, err = attemptExtractMod(*name)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -84,7 +85,8 @@ func main() {
 	outKey.Close()
 
 	// Step 6: Rename our mod to disable it
-	err = os.Rename("dlc/"+*name+".zip", "dlc/"+*name+".disabled")
+	disabledDlcName := strings.Replace(modDlcName, ".zip", ".disabled", 1)
+	err = os.Rename(modDlcName, disabledDlcName)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -108,10 +110,26 @@ func backup(name string) error {
 	return err
 }
 
-func attemptExtractMod(name string) error {
-	r, err := zip.OpenReader(filepath.Join("dlc", name+".zip"))
+func searchForMod(name string) (string, error) {
+	paths := []string{filepath.Join("dlc", name+".zip"), name + ".zip"}
+	for _, p := range paths {
+		_, err := os.Stat(p)
+		if err == nil {
+			return p, nil
+		}
+	}
+	return "", fmt.Errorf("Unable to find dlc file: %s.zip", name)
+}
+
+func attemptExtractMod(name string) (string, error) {
+	modPath, err := searchForMod(name)
 	if err != nil {
-		return err
+		return "", err
+	}
+
+	r, err := zip.OpenReader(modPath)
+	if err != nil {
+		return "", err
 	}
 	defer r.Close()
 
@@ -125,7 +143,7 @@ func attemptExtractMod(name string) error {
 		}
 		rc, err := f.Open()
 		if err != nil {
-			return err
+			return "", err
 		}
 
 		fname := f.Name
@@ -140,12 +158,12 @@ func attemptExtractMod(name string) error {
 		out, err := os.Create(fname)
 		if err != nil {
 			rc.Close()
-			return err
+			return "", err
 		}
 		_, err = io.Copy(out, rc)
 		if err != nil {
 			rc.Close()
-			return err
+			return "", err
 		}
 
 		out.Close()
@@ -155,7 +173,7 @@ func attemptExtractMod(name string) error {
 	fmt.Printf("\n")
 	log.Printf("Finished extracting files")
 
-	return nil
+	return modPath, nil
 }
 
 var msg = `
