@@ -1,4 +1,4 @@
-package mergekeys
+package main
 
 import (
 	"log"

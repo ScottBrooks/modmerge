@@ -11,8 +11,6 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
-
-	"github.com/ScottBrooks/modmerge"
 )
 
 var baseKey = flag.String("base", "chitin.key", "base game key file")
@@ -39,7 +37,7 @@ func main() {
 	}
 	defer baseKeyIn.Close()
 
-	bk, err := mergekeys.OpenKEY(baseKeyIn, "")
+	bk, err := OpenKEY(baseKeyIn, "")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -63,7 +61,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	mk, err := mergekeys.OpenKEY(modKeyIn, "")
+	mk, err := OpenKEY(modKeyIn, "")
 	if err != nil {
 		log.Fatal(err)
 	}
