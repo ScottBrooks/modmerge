@@ -38,7 +38,7 @@ The end result, assuming everything is successful, is you will have an updated c
 
 ```
 cd /path/to/modmerge
-go build github.com/scottbrooks/modmerge/modmerge
+go build ./...
 ```
 
 # Redistribution
